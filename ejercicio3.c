@@ -118,7 +118,7 @@ int main() {
         do {
             mostrarMenu();
             printf("\n\tSeleccione una opcion: ");
-            scanf_s("%d", &opcion, sizeof(opcion));
+            scanf("%d", &opcion, sizeof(opcion));
 
             switch (opcion) {
             case 1:
