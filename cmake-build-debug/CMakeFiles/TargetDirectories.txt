@@ -1,0 +1,3 @@
+C:/Users/BANGHO/hola/cmake-build-debug/CMakeFiles/hola.dir
+C:/Users/BANGHO/hola/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/BANGHO/hola/cmake-build-debug/CMakeFiles/rebuild_cache.dir
