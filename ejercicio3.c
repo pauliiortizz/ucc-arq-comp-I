@@ -228,7 +228,7 @@ void parpadeoAlternado() {
 #endif
 
         if (kbhit()) {
-            char c = _getch();
+            char c = getch();
             if (c == 'q') {
                 printf("\nSaliendo de Parpadeo alternado...\n");
                 return;
@@ -236,6 +236,54 @@ void parpadeoAlternado() {
                 speed -= SPEED_INCREMENT;
             } else if (c == 'd') {
                 speed += SPEED_INCREMENT;
+            }
+        }
+    }
+}
+
+void olaOceanica() {
+    // Tabla de datos para la secuencia de ola
+    const char *tabla_secuencia[] = {
+        "* - - - - - - -",
+        "* * - - - - - -",
+        "* * * - - - - -",
+        "* * * * - - - -",
+        "* * * * * - - -",
+        "* * * * * * - -",
+        "* * * * * * * -",
+        "* * * * * * * *",
+        "- * * * * * * *",
+        "- - * * * * * *",
+        "- - - * * * * *",
+        "- - - - * * * *",
+        "- - - - - * * *",
+        "- - - - - - * *",
+        "- - - - - - - *",
+        "- - - - - - - -"
+    };
+
+    // Variables locales
+    int num_secuencias = sizeof(tabla_secuencia) / sizeof(tabla_secuencia[0]);
+    int speed = 500000; // 0.5 segundos
+
+    printf("Secuencia de Ola. Presiona 'q' para salir.\n");
+
+    while (1) {
+        for (int i = 0; i < num_secuencias; i++) {
+            printf("%s\n", tabla_secuencia[i]);
+            fflush(stdout);
+            usleep(speed);
+
+            if (kbhit()) {
+                char c = getch();
+                if (c == 'q') {
+                    printf("Saliendo de Secuencia de Ola...\n");
+                    return;
+                } else if (c == 'u' && speed > SPEED_INCREMENT) {
+                    speed -= SPEED_INCREMENT;
+                } else if (c == 'd') {
+                    speed += SPEED_INCREMENT;
+                }
             }
         }
     }
@@ -293,7 +341,7 @@ int main() {
                     parpadeoAlternado();
                     break;
                 case 4:
-
+                    olaOceanica();
                     break;
                 case 5:
                     printf("\n\tSaliendo...\n");
