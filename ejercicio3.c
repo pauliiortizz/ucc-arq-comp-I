@@ -4,17 +4,50 @@
 
 #ifdef _WIN32
 #include <conio.h>
+#include <windows.h>
 #define CLEAR "cls"
+void delay(unsigned long int milliseconds) {
+    Sleep(milliseconds);
+}
 #else
 #include <termios.h>
 #include <unistd.h>
+#include <sys/select.h>
 #define CLEAR "clear"
+void delay(unsigned long int microseconds) {
+    usleep(microseconds);
+}
 #endif
 
 #define TECLA_ENTER 13
 #define TECLA_BACKSPACE 8
 #define LONGITUD_CLAVE 5
 #define MAX_INTENTOS 3
+#define SPEED_INCREMENT 100000
+
+int speed = 500000; // 500ms
+
+#ifndef _WIN32
+int kbhit(void) {
+    struct timeval tv = { 0L, 0L };
+    fd_set fds;
+    FD_ZERO(&fds);
+    FD_SET(0, &fds);
+    return select(1, &fds, NULL, NULL, &tv) > 0;
+}
+
+char getch(void) {
+    char c;
+    struct termios oldt, newt;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    c = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return c;
+}
+#endif
 
 void ocultarEntrada(char* clave, int longitud) {
     int i = 0;
@@ -78,6 +111,46 @@ void ocultarEntrada(char* clave, int longitud) {
 #endif
 }
 
+void autoFantastico() {
+    int leds[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+    int num_leds = sizeof(leds) / sizeof(leds[0]);
+
+    printf("Auto fantástico en ejecución. Presiona 'q' para salir.\n");
+    while (1) {
+        for (int i = 0; i < num_leds; i++) {
+            printf("\n");
+            for (int j = 0; j < num_leds; j++) {
+                if (j <= i) {
+                    printf("* ");
+                }
+                else {
+                    printf("- ");
+                }
+            }
+            fflush(stdout);
+#ifdef _WIN32
+            delay(speed / 1000);  // Convert microseconds to milliseconds for Windows
+#else
+            delay(speed);
+#endif
+
+            if (kbhit()) {
+                char c = getch();
+                if (c == 'q') {
+                    printf("\nSaliendo de Auto fantástico...\n");
+                    return;
+                }
+                else if (c == 'u' && speed > SPEED_INCREMENT) {
+                    speed -= SPEED_INCREMENT;
+                }
+                else if (c == 'd') {
+                    speed += SPEED_INCREMENT;
+                }
+            }
+        }
+    }
+}
+
 void mostrarMenu() {
     printf("\n\n\tMENU\n");
     printf("\t----\n");
@@ -118,11 +191,11 @@ int main() {
         do {
             mostrarMenu();
             printf("\n\tSeleccione una opcion: ");
-            scanf("%d", &opcion, sizeof(opcion));
+            scanf("%d", &opcion);
 
             switch (opcion) {
             case 1:
-                printf("\n\tEL AUTO FANTASTICO\n");
+                autoFantastico();
                 break;
             case 2:
                 printf("\n\tEL CHOQUE\n");

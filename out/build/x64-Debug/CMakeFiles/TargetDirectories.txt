@@ -1,0 +1,3 @@
+C:/Users/BANGHO/ucc-arq-comp-I/out/build/x64-Debug/CMakeFiles/hola.dir
+C:/Users/BANGHO/ucc-arq-comp-I/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/BANGHO/ucc-arq-comp-I/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
