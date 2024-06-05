@@ -55,7 +55,7 @@ void ocultarEntrada(char* clave, int longitud) {
 
 #ifdef _WIN32
     while (1) {
-        caracter = _getch();
+        caracter = getch();
 
         if (caracter == TECLA_ENTER) {
             clave[i] = '\0';
@@ -176,13 +176,78 @@ void autoFantastico() {
     }
 }
 
+
+void parpadeoAlternado() {
+    int leds[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+    int num_leds = sizeof(leds) / sizeof(leds[0]);
+
+    printf("Parpadeo alternado en ejecución. Presiona 'q' para salir.\n");
+    while (1) {
+        // Patrón 1: LED 1, 3, 5, 7 encendidos; LED 2, 4, 6, 8 apagados
+        for (int i = 0; i < num_leds; i++) {
+            if (i % 2 == 0) {
+                printf("* ");
+            } else {
+                printf("- ");
+            }
+        }
+        printf("\n");
+        fflush(stdout);
+#ifdef _WIN32
+        delay(speed / 1000);  // Convert microseconds to milliseconds for Windows
+#else
+        delay(speed);
+#endif
+
+        if (kbhit()) {
+            char c = getch();
+            if (c == 'q') {
+                printf("\nSaliendo de Parpadeo alternado...\n");
+                return;
+            } else if (c == 'u' && speed > SPEED_INCREMENT) {
+                speed -= SPEED_INCREMENT;
+            } else if (c == 'd') {
+                speed += SPEED_INCREMENT;
+            }
+        }
+
+        // Patrón 2: LED 2, 4, 6, 8 encendidos; LED 1, 3, 5, 7 apagados
+        for (int i = 0; i < num_leds; i++) {
+            if (i % 2 == 1) {
+                printf("* ");
+            } else {
+                printf("- ");
+            }
+        }
+        printf("\n");
+        fflush(stdout);
+#ifdef _WIN32
+        delay(speed / 1000);  // Convert microseconds to milliseconds for Windows
+#else
+        delay(speed);
+#endif
+
+        if (kbhit()) {
+            char c = _getch();
+            if (c == 'q') {
+                printf("\nSaliendo de Parpadeo alternado...\n");
+                return;
+            } else if (c == 'u' && speed > SPEED_INCREMENT) {
+                speed -= SPEED_INCREMENT;
+            } else if (c == 'd') {
+                speed += SPEED_INCREMENT;
+            }
+        }
+    }
+}
+
 void mostrarMenu() {
     printf("\n\n\tMENU\n");
     printf("\t----\n");
     printf("\t1. El Auto Fantastico\n");
     printf("\t2. El Choque\n");
-    printf("\t3. Opcion 3\n");
-    printf("\t4. Opcion 4\n");
+    printf("\t3. Parpadeo Alternado\n");
+    printf("\t4. Ola oceánica\n");
     printf("\t5. Salir\n");
 }
 
@@ -222,13 +287,13 @@ int main() {
                     autoFantastico();
                     break;
                 case 2:
-                    printf("\n\tEL CHOQUE\n");
+
                     break;
                 case 3:
-                    printf("\n\tHa seleccionado la opcion 3\n");
+                    parpadeoAlternado();
                     break;
                 case 4:
-                    printf("\n\tHa seleccionado la opcion 4\n");
+
                     break;
                 case 5:
                     printf("\n\tSaliendo...\n");
