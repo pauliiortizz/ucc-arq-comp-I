@@ -118,15 +118,14 @@ void autoFantastico() {
     printf("Auto fantástico en ejecución. Presiona 'q' para salir.\n");
     while (1) {
         for (int i = 0; i < num_leds; i++) {
-            printf("\n");
             for (int j = 0; j < num_leds; j++) {
-                if (j <= i) {
+                if (j == i) {
                     printf("* ");
-                }
-                else {
+                } else {
                     printf("- ");
                 }
             }
+            printf("\n");
             fflush(stdout);
 #ifdef _WIN32
             delay(speed / 1000);  // Convert microseconds to milliseconds for Windows
@@ -139,11 +138,37 @@ void autoFantastico() {
                 if (c == 'q') {
                     printf("\nSaliendo de Auto fantástico...\n");
                     return;
-                }
-                else if (c == 'u' && speed > SPEED_INCREMENT) {
+                } else if (c == 'u' && speed > SPEED_INCREMENT) {
                     speed -= SPEED_INCREMENT;
+                } else if (c == 'd') {
+                    speed += SPEED_INCREMENT;
                 }
-                else if (c == 'd') {
+            }
+        }
+        for (int i = num_leds - 2; i > 0; i--) {
+            for (int j = 0; j < num_leds; j++) {
+                if (j == i) {
+                    printf("* ");
+                } else {
+                    printf("- ");
+                }
+            }
+            printf("\n");
+            fflush(stdout);
+#ifdef _WIN32
+            delay(speed / 1000);  // Convert microseconds to milliseconds for Windows
+#else
+            delay(speed);
+#endif
+
+            if (kbhit()) {
+                char c = getch();
+                if (c == 'q') {
+                    printf("\nSaliendo de Auto fantástico...\n");
+                    return;
+                } else if (c == 'u' && speed > SPEED_INCREMENT) {
+                    speed -= SPEED_INCREMENT;
+                } else if (c == 'd') {
                     speed += SPEED_INCREMENT;
                 }
             }
@@ -176,8 +201,7 @@ int main() {
 
         if (strcmp(clave, claveGuardada) == 0) {
             ingresa = 1;
-        }
-        else {
+        } else {
             printf("\n\n\tClave incorrecta\n");
             intento++;
             getchar(); // Espera a que el usuario presione Enter
@@ -194,23 +218,23 @@ int main() {
             scanf("%d", &opcion);
 
             switch (opcion) {
-            case 1:
-                autoFantastico();
-                break;
-            case 2:
-                printf("\n\tEL CHOQUE\n");
-                break;
-            case 3:
-                printf("\n\tHa seleccionado la opcion 3\n");
-                break;
-            case 4:
-                printf("\n\tHa seleccionado la opcion 4\n");
-                break;
-            case 5:
-                printf("\n\tSaliendo...\n");
-                break;
-            default:
-                printf("\n\tOpcion no valida\n");
+                case 1:
+                    autoFantastico();
+                    break;
+                case 2:
+                    printf("\n\tEL CHOQUE\n");
+                    break;
+                case 3:
+                    printf("\n\tHa seleccionado la opcion 3\n");
+                    break;
+                case 4:
+                    printf("\n\tHa seleccionado la opcion 4\n");
+                    break;
+                case 5:
+                    printf("\n\tSaliendo...\n");
+                    break;
+                default:
+                    printf("\n\tOpcion no valida\n");
             }
 
             getchar(); // Limpiar el buffer de entrada
@@ -222,8 +246,7 @@ int main() {
 
             system(CLEAR); // Limpiar la pantalla antes de mostrar el menú nuevamente
         } while (1);
-    }
-    else {
+    } else {
         printf("\n\n\tHa sobrepasado el número máximo de intentos permitidos\n");
     }
 
