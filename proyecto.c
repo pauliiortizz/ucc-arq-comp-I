@@ -176,6 +176,54 @@ void autoFantastico() {
     }
 }
 
+void choque() {
+    const char *tabla_choque[] = {
+            "* - - - - - - *",
+            " * - - - - - * ",
+            "- * - - - - * -",
+            "- -* - - - *- -",
+            "- - * - - *- - ",
+            "- - -* - *- - -",
+            "- - - * *- - - ",
+            "- - - -* - - - ",
+            "- - - * *- - - ",
+            "- - -* - *- - -",
+            "- -* - - * - -",
+            "- * - - - *- -",
+            " * - - - - * -",
+            "* - - - - - * ",
+            "* - - - - - - *"
+    };
+
+    int num_secuencias = sizeof(tabla_choque) / sizeof(tabla_choque[0]);
+
+    printf("Secuencia de Choque. Presiona 'q' para salir.\n");
+
+    while (1) {
+        for (int i = 0; i < num_secuencias; i++) {
+            printf("%s\n", tabla_choque[i]);
+            fflush(stdout);
+#ifdef _WIN32
+            delay(speed / 1000);
+#else
+            delay(speed);
+#endif
+
+            if (kbhit()) {
+                char c = getch();
+                if (c == 'q') {
+                    printf("Saliendo de Secuencia de Choque...\n");
+                    return;
+                } else if (c == 'u' && speed > SPEED_INCREMENT) {
+                    speed -= SPEED_INCREMENT;
+                } else if (c == 'd') {
+                    speed += SPEED_INCREMENT;
+                }
+            }
+        }
+    }
+}
+
 
 void parpadeoAlternado() {
     int leds[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
@@ -272,7 +320,13 @@ void olaOceanica() {
         for (int i = 0; i < num_secuencias; i++) {
             printf("%s\n", tabla_secuencia[i]);
             fflush(stdout);
-            usleep(speed);
+            //usleep(speed);  para MacOS
+           // _sleep(speed); // para Windows
+#ifdef _WIN32
+            delay(speed / 1000);
+#else
+            delay(speed);
+#endif
 
             if (kbhit()) {
                 char c = getch();
@@ -335,7 +389,7 @@ int main() {
                     autoFantastico();
                     break;
                 case 2:
-
+                    choque();
                     break;
                 case 3:
                     parpadeoAlternado();

@@ -1,0 +1,78 @@
+        AUTO FANTASTICO
+
+.data
+array:
+    .byte 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
+
+.text
+.global _start
+
+_start:
+    LDR x4, =array     // Carga la dirección base del array en x4
+    MOV w5, #15        // Establece el número de iteraciones en w5
+
+loop:
+    LDRB w6, [x4], #1  // Carga el byte del array y incrementa el puntero
+    BL leds            // Llama a la función para mostrar el patrón
+    MOV w0, #300       // Establece el retardo
+    BL delayMillis     // Llama a la función de retardo
+    SUBS w5, w5, #1    // Decrementa el contador de bucle
+    B.NE loop          // Repite si no ha terminado
+
+    B end
+
+leds:
+    // Implementa la función para enviar el patrón a los LEDs aquí
+    RET
+
+delayMillis:
+    // Implementa la función de retardo aquí
+    RET
+
+end:
+    // Implementa el final del programa aquí, por ejemplo, entrar en un estado de bajo consumo
+    B end
+
+
+
+       CHOQUE
+
+.section .data
+array:
+    .byte 0x81  // *       *
+    .byte 0x42  //  *     *
+    .byte 0x24  //   *   *
+    .byte 0x18  //    * *
+    .byte 0x18  //    * *
+    .byte 0x24  //   *   *
+    .byte 0x42  //  *     *
+    .byte 0x81  // *       *
+
+.section .text
+.global _start
+
+_start:
+    LDR R4, =array     // Cargar la dirección base del array
+    MOV R5, #8         // Establecer el número de iteraciones
+
+loop:
+    LDRB R6, [R4], #1  // Cargar byte del array e incrementar puntero
+    BL leds            // Llamar a la función para mostrar el patrón
+    MOV R0, #300       // Establecer retardo
+    BL delayMillis     // Llamar a la función de retardo
+    SUBS R5, R5, #1    // Decrementar contador de bucle
+    BNE loop           // Repetir si no ha terminado
+
+    B end
+
+leds:
+    // Implementar la función para enviar el patrón a los LEDs aquí
+    BX LR
+
+delayMillis:
+    // Implementar la función de retardo aquí
+    BX LR
+
+end:
+    // Implementar el final del programa aquí, por ejemplo, entrar en un estado de bajo consumo
+    B end
