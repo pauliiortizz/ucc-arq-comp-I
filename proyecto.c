@@ -19,6 +19,17 @@
 
 int speed = 500000;
 
+void leds(int pattern) {
+    int pins[8] = {LED_PIN_1, LED_PIN_2, LED_PIN_3, LED_PIN_4, LED_PIN_5, LED_PIN_6, LED_PIN_7, LED_PIN_8};
+    for (int i = 0; i < 8; i++) {
+        if (pattern & (1 << i)) {
+            digitalWrite(pins[i], HIGH);
+        } else {
+            digitalWrite(pins[i], LOW);
+        }
+    }
+}
+
 char my_getch(void) {
     int ch;
     nodelay(stdscr, TRUE); // No bloquear getch
