@@ -19,17 +19,6 @@
 
 int speed = 500000;
 
-void leds(int pattern) {
-    int pins[8] = {LED_PIN_1, LED_PIN_2, LED_PIN_3, LED_PIN_4, LED_PIN_5, LED_PIN_6, LED_PIN_7, LED_PIN_8};
-    for (int i = 0; i < 8; i++) {
-        if (pattern & (1 << i)) {
-            digitalWrite(pins[i], HIGH);
-        } else {
-            digitalWrite(pins[i], LOW);
-        }
-    }
-}
-
 char my_getch(void) {
     int ch;
     nodelay(stdscr, TRUE); // No bloquear getch
@@ -157,11 +146,15 @@ void choque(void) {
     keypad(stdscr, TRUE); // Habilitar teclas especiales
 
     printw("Mostrando Choque: \n");
-    unsigned char tabla[7] = {0x81, 0x42, 0x24, 0x18, 0x18, 0x24, 0x42};
-    for (int i = 0; i < 7; i++) {
-        disp_binary(tabla[i]);
-        refresh();
-        usleep(1000 * 1000); // Convertir a microsegundos
+
+    unsigned char tabla[7] = {0x81, 0x42, 0x24, 0x18, 0x24, 0x42, 0x81};
+
+    while (1) {
+        for (int i = 0; i < 7; i++) {
+            disp_binary(tabla[i]);
+            refresh();
+            usleep(1000 * 500); // Convertir a microsegundos (500 ms)
+        }
     }
 
     printw("Chau...\n");
@@ -246,7 +239,7 @@ void mostrarMenu() {
     printf("\t1. El Auto Fantastico\n");
     printf("\t2. El Choque\n");
     printf("\t3. Parpadeo Alternado\n");
-    printf("\t4. Ola oceÃ¡nica\n");
+    printf("\t4. Ola Oceanica\n");
     printf("\t5. Salir\n");
 }
 
