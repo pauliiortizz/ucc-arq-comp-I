@@ -215,6 +215,15 @@ void olaOceanica(void) {
     endwin(); // Finalizar ncurses
 }
 
+void mostrarMenu() {
+    printf("\n\n\tMENU\n");
+    printf("\t----\n");
+    printf("\t1. El Auto Fantastico\n");
+    printf("\t2. El Choque\n");
+    printf("\t3. Parpadeo Alternado\n");
+    printf("\t4. Ola oceÃ¡nica\n");
+    printf("\t5. Salir\n");
+}
 
 int main() {
     char clave[LONGITUD_CLAVE + 1];
