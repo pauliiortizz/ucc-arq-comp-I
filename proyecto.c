@@ -95,6 +95,7 @@ void delay(unsigned long int *velocidad) {
             }
         }*/
     }
+}
 
     int my_getch() {
         int ch;
