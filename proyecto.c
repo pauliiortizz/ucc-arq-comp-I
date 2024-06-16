@@ -57,25 +57,17 @@ void delay(unsigned long int *velocidad) {
     nodelay(stdscr, TRUE); // No espera por la entrada del usuario
     keypad(stdscr, TRUE);
 
-    while (*velocidad > 0) {
-        if (kbhit()) {
-            int ch = my_getch();
-            if (ch == KEY_DOWN & 0x8000) {
-                *velocidad += SPEED_INCREMENT;
-            } else if (ch == KEY_UP & 0x8000) {
-                *velocidad -= SPEED_INCREMENT;
-            } else if (ch == 'e') {
-                system(CLEAR);
-                main();
-                return;
-            } else {
-                break;
-            }
+    int ch = getch();
 
-        }
+    if (ch == KEY_DOWN) {
+        *velocidad += 50;
+    }if (*velocidad > 50 && ch == KEY_UP) {
+        *velocidad -= 50;
+    }
 
-        usleep(*velocidad);
-        endwin();
+    usleep(*velocidad * 1000);
+
+    endwin();
         /*
         while (*velocidad > 0) {
             if(kbhit()){
@@ -95,7 +87,6 @@ void delay(unsigned long int *velocidad) {
             }
         }*/
     }
-}
 
     int my_getch() {
         int ch;
@@ -106,7 +97,7 @@ void delay(unsigned long int *velocidad) {
     }
 
     void AutoFantastico(void) {
-        unsigned long int speed1 = 500000;
+        unsigned long int speed1 = 500;
         unsigned char output;
         int t, j = 1;
         int on_time = 1;
@@ -146,7 +137,7 @@ void delay(unsigned long int *velocidad) {
 
 
     void choque(void) {
-        unsigned int speed2 = 500000;
+        unsigned long int speed2 = 500;
         initscr(); // Iniciar ncurses
         noecho(); // No mostrar teclas presionadas
         keypad(stdscr, TRUE); // Habilitar teclas especiales
@@ -170,7 +161,7 @@ void delay(unsigned long int *velocidad) {
     }
 
     void parpadeoAlternado(void) {
-        unsigned int speed3 = 500000;
+        unsigned long int speed3 = 500;
         unsigned int output;
         int on_time = 1;
 
@@ -213,7 +204,7 @@ void delay(unsigned long int *velocidad) {
     }
 
     void olaOceanica(void) {
-        unsigned int speed4 = 500000;
+        unsigned long int speed4 = 500;
         initscr(); // Iniciar ncurses
         noecho(); // No mostrar teclas presionadas
         keypad(stdscr, TRUE); // Habilitar teclas especiales
