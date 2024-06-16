@@ -142,10 +142,10 @@ void delay(unsigned long int *velocidad) {
 
         printw("Mostrando Choque: \n");
 
-        unsigned char tabla[7] = {0x81, 0x42, 0x24, 0x18, 0x24, 0x42, 0x81};
+        unsigned char tabla[6] = {0x81, 0x42, 0x24, 0x18, 0x24, 0x42};
 
         while (1) {
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 6; i++) {
                 disp_binary(tabla[i]);
                 leds(~tabla[i]);
                 delay(&speed2);
