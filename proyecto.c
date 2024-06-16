@@ -116,7 +116,6 @@ void delay(unsigned long int *velocidad) {
                 delay(&speed1);
                 output = output >> 1;
                 refresh();
-                sleep(on_time);
             }
             output = 0x01;
             for (t = 0; t < 6; t++) {
@@ -125,7 +124,6 @@ void delay(unsigned long int *velocidad) {
                 delay(&speed1);
                 output = output << 1;
                 refresh();
-                sleep(on_time);
             }
         } while (1);
         output = 0x00;
@@ -149,9 +147,10 @@ void delay(unsigned long int *velocidad) {
         while (1) {
             for (int i = 0; i < 7; i++) {
                 disp_binary(tabla[i]);
+                leds(~tabla[i]);
                 delay(&speed2);
                 refresh();
-                usleep(1000 * 500); // Convertir a microsegundos (500 ms)
+                //usleep(1000 * 500); // Convertir a microsegundos (500 ms)
             }
         }
 
@@ -176,16 +175,16 @@ void delay(unsigned long int *velocidad) {
             // Mostrar posiciones impares
             output = 0xAA; // 10101010 en binario, representa las posiciones impares
             disp_binary(output);
+            leds(output);
             delay(&speed3);
             refresh();
-            sleep(on_time);
 
             // Mostrar posiciones pares
             output = 0x55; // 01010101 en binario, representa las posiciones pares
             disp_binary(output);
+            leds(output);
             delay(&speed3);
             refresh();
-            sleep(on_time);
 
             if (kbhit()) {
                 char c = my_getch();
@@ -198,6 +197,7 @@ void delay(unsigned long int *velocidad) {
 
         output = 0x00;
         disp_binary(output);
+        leds(output);
         printw("Chau...\n");
         refresh();
         endwin(); // Finalizar ncurses
@@ -247,6 +247,7 @@ void delay(unsigned long int *velocidad) {
     }
 
     int main() {
+
         char clave[LONGITUD_CLAVE + 1];
         int intento = 0;
         int ingresa = 0;
