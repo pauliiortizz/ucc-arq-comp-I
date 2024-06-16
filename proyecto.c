@@ -221,7 +221,7 @@ void delay(unsigned long int *velocidad) {
                 disp_binary(tabla[i]);
                 delay(&speed4);
                 refresh();
-                sleep(500000); // 0.5 segundos
+                usleep(500000); // 0.5 segundos
 
                 if (kbhit()) {
                     char c = my_getch();
