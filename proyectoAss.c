@@ -47,16 +47,6 @@ int kbhit(void) {
     oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
 
-    /*
-    while ((ch = getchar()) != EOF) {
-        if (ch != 100 && ch != 117) {
-            ungetc(ch, stdin);
-            tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-            fcntl(STDIN_FILENO, F_SETFL, oldf);
-            return 1;
-        }
-    }*/
-
     ch = getchar();
 
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
@@ -102,34 +92,7 @@ void delay(unsigned long int *velocidad) {
     usleep(*velocidad * 1000);   // Retardo ajustado
 
     endwin();
-    /*
-    while (*velocidad > 0) {
-        if(kbhit()){
-            int ch =my_getch();
-            if (ch == KEY_DOWN & 0x8000) {
-                *velocidad -= SPEED_INCREMENT;
-            } else if (ch == KEY_UP & 0x8000) {
-                *velocidad += SPEED_INCREMENT;
-            } else if (ch=='e'){
-                endwin();
-                system(CLEAR);
-                main();
-                return;
-            }else{
-                break;
-            }
-        }
-    }*/
 }
-
-/*int my_getch() {
-    int ch;
-    nodelay(stdscr, TRUE); // No bloquear getch
-    ch = getch();
-    nodelay(stdscr, FALSE); // Restaurar el bloqueo de getch
-    return ch;
-}*/
-
 void AutoFantastico(void) {
     unsigned long int speed1 = 500;
     unsigned char output;
@@ -347,7 +310,6 @@ int main() {
                    olaOceanica();
                     break;
                 case 5:
-
                     break;
                 default:
                     break;
@@ -370,15 +332,6 @@ int main() {
 
     return 0;
 }
-
-/*int kbhit(void) {
-    struct timeval tv = {0L, 0L};
-    fd_set fds;
-    FD_ZERO(&fds);
-    FD_SET(0, &fds);
-    return select(1, &fds, NULL, NULL, &tv) > 0;
-}*/
-
 void ocultarEntrada(char *clave, int longitud) {
     int i = 0;
     char caracter;
