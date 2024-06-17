@@ -19,6 +19,17 @@ resetO:
     MOV R7, #5          @ Repetir 5 veces
 
 loopO:
+    @ Comprobar si se ha presionado alguna tecla
+    BL kbhit
+    CMP R0, #0          @ Comprobar si kbhit devuelve 0 (no se ha presionado ninguna tecla)
+    BEQ no_key_pressed
+
+    @ Leer la tecla presionada
+    BL my_getch
+    CMP R0, #'e'        @ Comprobar si la tecla presionada es 'e'
+    BEQ end_loop        @ Si la tecla presionada es 'e', salir del loop
+
+no_key_pressed:
     @ Recorrer la tabla de patrones de olas
     LDRB R0, [R4, R5]   @ Cargar el valor de la tabla en R0
     BL disp_binary      @ Mostrar el valor en binario
@@ -35,7 +46,7 @@ loopO:
 
     B loopO             @ Volver al inicio del bucle
 
-exit:
+end_loop:
     @ Apagar todos los LEDs (output = 0x00)
     MOV R0, #0x00
     BL disp_binary
