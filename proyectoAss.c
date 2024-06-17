@@ -341,10 +341,10 @@ int main() {
                     choque();
                     break;
                 case 3:
-                    //parpadeoAlternado();
+                    parpadeoAlternado();
                     break;
                 case 4:
-                   // olaOceanica();
+                   olaOceanica();
                     break;
                 case 5:
 
