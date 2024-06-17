@@ -37,6 +37,33 @@ int leds(int num);
 
 const char led[] = {7, 8, 25, 24, 23, 18, 15, 14};
 
+int kbhit(void) {
+    struct termios oldt, newt;
+    int ch;
+    int oldf;
+
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
+
+    while ((ch = getchar()) != EOF) {
+        if (ch != 100 && ch != 117) {
+            ungetc(ch, stdin);
+            tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+            fcntl(STDIN_FILENO, F_SETFL, oldf);
+            return 1;
+        }
+    }
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    fcntl(STDIN_FILENO, F_SETFL, oldf);
+
+    return 0;
+}
+
 int leds(int num) {
     int i, numval;
     for (i = 0; i < 8; i++) {
@@ -59,9 +86,9 @@ void delay(unsigned long int *velocidad) {
 
     int ch = getch();
 
-    if (ch == KEY_DOWN) {
+    if (ch == 100) {
         *velocidad += 50;
-    }if (*velocidad > 50 && ch == KEY_UP) {
+    }if (*velocidad > 50 && ch == 117) {
         *velocidad -= 50;
     }
 
@@ -88,13 +115,13 @@ void delay(unsigned long int *velocidad) {
         }*/
     }
 
-    int my_getch() {
+    /*int my_getch() {
         int ch;
         nodelay(stdscr, TRUE); // No bloquear getch
         ch = getch();
         nodelay(stdscr, FALSE); // Restaurar el bloqueo de getch
         return ch;
-    }
+    }*/
 
     void AutoFantastico(void) {
         unsigned long int speed1 = 500;
@@ -116,6 +143,7 @@ void delay(unsigned long int *velocidad) {
                 delay(&speed1);
                 output = output >> 1;
                 refresh();
+                sleep(on_time);
             }
             output = 0x01;
             for (t = 0; t < 6; t++) {
@@ -124,6 +152,7 @@ void delay(unsigned long int *velocidad) {
                 delay(&speed1);
                 output = output << 1;
                 refresh();
+                sleep(on_time);
             }
         } while (1);
         output = 0x00;
@@ -134,30 +163,30 @@ void delay(unsigned long int *velocidad) {
     }
 
 
-    void choque(void) {
-        unsigned long int speed2 = 500;
-        initscr(); // Iniciar ncurses
-        noecho(); // No mostrar teclas presionadas
-        keypad(stdscr, TRUE); // Habilitar teclas especiales
+void choque(void) {
+    unsigned long int speed2 = 500;
+    initscr(); // Iniciar ncurses
+    noecho(); // No mostrar teclas presionadas
+    keypad(stdscr, TRUE); // Habilitar teclas especiales
 
-        printw("Mostrando Choque: \n");
+    printw("Mostrando Choque: \n");
 
-        unsigned char tabla[6] = {0x81, 0x42, 0x24, 0x18, 0x24, 0x42};
+    unsigned char tabla[7] = {0x81, 0x42, 0x24, 0x18, 0x24, 0x42, 0x81};
 
-        while (1) {
-            for (int i = 0; i < 6; i++) {
-                disp_binary(tabla[i]);
-                leds(~tabla[i]);
-                delay(&speed2);
-                refresh();
-                //usleep(1000 * 500); // Convertir a microsegundos (500 ms)
-            }
+    while (1) {
+        for (int i = 0; i < 7; i++) {
+            disp_binary(tabla[i]);
+            leds(tabla[i]);
+            delay(&speed2);
+            refresh();
+            //usleep(1000 * 500); // Convertir a microsegundos (500 ms)
         }
-
-        printw("Chau...\n");
-        refresh();
-        endwin(); // Finalizar ncurses
     }
+
+    printw("Chau...\n");
+    refresh();
+    endwin(); // Finalizar ncurses
+}
 
     void parpadeoAlternado(void) {
         unsigned long int speed3 = 500;
@@ -185,13 +214,6 @@ void delay(unsigned long int *velocidad) {
             leds(output);
             delay(&speed3);
             refresh();
-
-            if (kbhit()) {
-                char c = my_getch();
-                if (c == 'e') {
-                    break;
-                }
-            }
 
         } while (1); // Repite hasta que se toque una tecla
 
@@ -224,27 +246,26 @@ void delay(unsigned long int *velocidad) {
                 usleep(500000); // 0.5 segundos
 
                 if (kbhit()) {
-                    char c = my_getch();
-                    if (c == 'e') {
-                        endwin();
-                        return;
+                    getchar();
+                    printf("\nSe detuvo la ejecución ...\n");
+                    system("clear");
+                    return;
                     }
                 }
-            }
         } while (1); // Repite hasta que se toque una tecla
 
         endwin(); // Finalizar ncurses
     }
 
-    void mostrarMenu() {
-        printf("\n\n\tMENU\n");
-        printf("\t----\n");
-        printf("\t1. El Auto Fantastico\n");
-        printf("\t2. El Choque\n");
-        printf("\t3. Parpadeo Alternado\n");
-        printf("\t4. Ola oceÃ¡nica\n");
-        printf("\t5. Salir\n");
-    }
+void mostrarMenu() {
+    printf("\n\n\tMENU\n");
+    printf("\t----\n");
+    printf("\t1. El Auto Fantastico\n");
+    printf("\t2. El Choque\n");
+    printf("\t3. Parpadeo Alternado\n");
+    printf("\t4. Ola oceÃ¡nica\n");
+    printf("\t5. Salir\n");
+}
 
     int main() {
 
@@ -322,13 +343,13 @@ void delay(unsigned long int *velocidad) {
         return 0;
     }
 
-    int kbhit(void) {
+    /*int kbhit(void) {
         struct timeval tv = {0L, 0L};
         fd_set fds;
         FD_ZERO(&fds);
         FD_SET(0, &fds);
         return select(1, &fds, NULL, NULL, &tv) > 0;
-    }
+    }*/
 
     void ocultarEntrada(char *clave, int longitud) {
         int i = 0;
