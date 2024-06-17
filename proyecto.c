@@ -19,8 +19,6 @@
 #define TECLA_BACKSPACE 8
 #define LONGITUD_CLAVE 5
 
-int main();
-
 void mostrarMenu();
 
 int my_getch(void);
@@ -94,10 +92,10 @@ void delay(unsigned long int *velocidad) {
 
     int ch = getch();
 
-    if (ch == 100) {     // ASCII de la 'd'
+    if (ch == KEY_DOWN) {     // ASCII de la 'd'
         *velocidad += 200;
     }
-    if (*velocidad > 200 && ch == 117) {    // ASCII de la 'u'
+    if (*velocidad > 200 && ch == KEY_UP) {    // ASCII de la 'u'
         *velocidad -= 200;
     }
 
@@ -136,7 +134,6 @@ void AutoFantastico(void) {
     unsigned long int speed1 = 500;
     unsigned char output;
     int t, j = 1;
-    int on_time = 1;
 
     initscr(); // Iniciar ncurses
     clear();
