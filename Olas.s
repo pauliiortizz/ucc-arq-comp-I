@@ -1,3 +1,5 @@
+.text 
+
 .global ola_oceanica
 
 .data
