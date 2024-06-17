@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <sys/select.h>
 #include <sys/time.h>
+#include "assembly_functions.h"
 
 #define CLEAR "clear"
 
