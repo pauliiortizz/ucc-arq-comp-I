@@ -1,15 +1,10 @@
-.global main
-.global disp_binary
-.global delay
-.global leds
-.global kbhit
-.global my_getch
+.global parpadeo
 
 .data
 speed: .word 500000
 
 .text
-main:
+parpadeo:
     @ Guardar registros necesarios
     push {r4, r5, r6, r7, lr}
 
