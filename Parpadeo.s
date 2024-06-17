@@ -10,45 +10,40 @@ parpadeo:
 
     @ Inicializar variables
     ldr r0, =speed
-    ldr r0, [r0]       @ speed
-    mov r1, #1         @ on_time
-    mov r2, #0xAA      @ output (posiciones impares)
-    mov r3, #0x55      @ output (posiciones pares)
+    ldr r1, [r0]       @ Cargar valor de speed en r1
+    mov r2, #0xAA      @ Patrón para posiciones impares
+    mov r3, #0x55      @ Patrón para posiciones pares
 
-loop
-    @ Salir del bucle si kbhit() devuelve verdadero
+loop:
+    @ Comprobar si una tecla ha sido presionada con kbhit()
     bl kbhit
     cmp r0, #0
-    beq continue_loop
+    bne continue_loop
 
-    @ Leer la tecla presionada
-    bl my_getch
+    @ Leer la tecla presionada con getch()
+    bl getch
     cmp r0, #'e'
     beq end_loop
 
-continue_loop
+continue_loop:
     @ Mostrar posiciones impares (0xAA)
     mov r0, r2
     bl disp_binary
-    ldr r0, =speed
-    ldr r0, [r0]
+    mov r0, r1
     bl delay
 
     @ Mostrar posiciones pares (0x55)
     mov r0, r3
     bl disp_binary
-    ldr r0, =speed
-    ldr r0, [r0]
+    mov r0, r1
     bl delay
 
     b loop
 
-end_loop
+end_loop:
     @ Apagar todos los LEDs (output = 0x00)
     mov r0, #0x00
     bl disp_binary
-    @ Mostrar mensaje de despedida (opcional, si es necesario en pantalla)
-    @ printw("Chau...\n");
 
     @ Restaurar registros y salir
     pop {r4, r5, r6, r7, lr}
