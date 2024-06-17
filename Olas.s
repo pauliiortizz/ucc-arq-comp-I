@@ -1,4 +1,6 @@
-
+.extern disp_binary
+.extern delay
+.text
     .global olaOceanica
 
 .data
