@@ -1,8 +1,0 @@
-# ninja log v5
-9	478	7393132139991437	CMakeFiles/hola.dir/ejercicio_3.c.obj	4f2fd1674d876e6c
-480	1118	7393132146101046	hola.exe	e84eab72b0fe79b1
-2	91	7393138211309806	CMakeFiles/hola.dir/ejercicio_3.c.obj	4f2fd1674d876e6c
-2	354	7393139569124828	CMakeFiles/hola.dir/ejercicio_3.c.obj	4f2fd1674d876e6c
-355	523	7393139570367566	hola.exe	e84eab72b0fe79b1
-2	622	7393145622693365	CMakeFiles/hola.dir/ejercicio_3.c.obj	4f2fd1674d876e6c
-623	807	7393145624152031	hola.exe	e84eab72b0fe79b1

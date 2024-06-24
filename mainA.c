@@ -19,19 +19,19 @@
 #define TECLA_BACKSPACE 8
 #define LONGITUD_CLAVE 5
 
-int main();
-
+//extern void *parpadeoAlternado();
+//extern void *olaOceanica(void);
 void mostrarMenu();
 
 int my_getch(void);
 
 int kbhit(void);
 
-void delay(unsigned long int *);
+void delay(unsigned long int *velocidad);
 
 void ocultarEntrada(char *clave, int longitud);
 
-void disp_binary(int);
+void disp_binary();
 
 int leds(int num);
 
@@ -48,16 +48,6 @@ int kbhit(void) {
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
-
-    /*
-    while ((ch = getchar()) != EOF) {
-        if (ch != 100 && ch != 117) {
-            ungetc(ch, stdin);
-            tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-            fcntl(STDIN_FILENO, F_SETFL, oldf);
-            return 1;
-        }
-    }*/
 
     ch = getchar();
 
@@ -94,49 +84,76 @@ void delay(unsigned long int *velocidad) {
 
     int ch = getch();
 
-    if (ch == 100) {     // ASCII de la 'd'
+    if (ch == KEY_DOWN) {     // ASCII de la 'd'
         *velocidad += 200;
     }
-    if (*velocidad > 200 && ch == 117) {    // ASCII de la 'u'
+    if (*velocidad > 200 && ch == KEY_UP) {    // ASCII de la 'u'
         *velocidad -= 200;
     }
 
     usleep(*velocidad * 1000);   // Retardo ajustado
 
     endwin();
-    /*
-    while (*velocidad > 0) {
-        if(kbhit()){
-            int ch =my_getch();
-            if (ch == KEY_DOWN & 0x8000) {
-                *velocidad -= SPEED_INCREMENT;
-            } else if (ch == KEY_UP & 0x8000) {
-                *velocidad += SPEED_INCREMENT;
-            } else if (ch=='e'){
-                endwin();
-                system(CLEAR);
-                main();
-                return;
-            }else{
-                break;
-            }
-        }
-    }*/
 }
 
-/*int my_getch() {
-    int ch;
-    nodelay(stdscr, TRUE); // No bloquear getch
-    ch = getch();
-    nodelay(stdscr, FALSE); // Restaurar el bloqueo de getch
-    return ch;
-}*/
+
+///////////////// Delay para las funciones en assembly ///////////////////
+int delayAssembly(int tiempo){
+ int i;
+ int input1, input2;
+ int resultado = tiempo;
+ 
+    unsigned int j = 0x3fffff; //raspberry 0x3fffff;
+    for (i = 0; i < tiempo; i++) {
+        for (j = 0; j < 65535; ++j) {
+            if (kbhit()) {
+                input1 = getch();
+
+                if (KEY_UP == 224){
+
+                input2 = getch();
+
+                if (input2 != 72 && input2 != 80) {
+                    return resultado = 0 ;
+                }
+
+                if (input2 == 72) { // si input es up key 
+                    resultado = resultado - 500;
+                }
+
+                if (input2 == 80) { // si input es down key
+                    resultado = resultado + 500;
+                }  
+
+                } else {
+                    return resultado = 0;
+                } 
+               
+                }
+        }
+        while (j) j--;
+                keypad(stdscr, TRUE);
+                nodelay(stdscr, TRUE);
+                switch (getch()) {
+                case 'a':
+                    return 0;
+                case KEY_UP:
+                resultado = tiempo - 500;
+                break;
+                case KEY_DOWN:
+                resultado = tiempo + 500;
+                break;
+                }
+                
+
+    return resultado;
+}
+}
 
 void AutoFantastico(void) {
     unsigned long int speed1 = 500;
     unsigned char output;
     int t, j = 1;
-    int on_time = 1;
 
     initscr(); // Iniciar ncurses
     clear();
@@ -208,7 +225,7 @@ void choque(void) {
     endwin(); // Finalizar ncurses
 }
 
-void parpadeoAlternado(void) {
+/* void parpadeoAlternado(void) {
     unsigned long int speed3 = 500;
     unsigned int output;
 
@@ -284,6 +301,7 @@ void olaOceanica(void) {
 
     endwin(); // Finalizar ncurses
 }
+*/
 
 void mostrarMenu() {
     printf("\n\n\tMENU\n");
@@ -346,16 +364,15 @@ int main() {
                     parpadeoAlternado();
                     break;
                 case 4:
-                    olaOceanica();
+                   olaOceanica();
                     break;
                 case 5:
-
                     break;
                 default:
                     break;
             }
 
-            system(CLEAR); // Limpiar la pantalla antes de mostrar el menu nuevamente
+            //system(CLEAR); // Limpiar la pantalla antes de mostrar el menu nuevamente
             printf("\n\n\tPresione Enter para continuar...");
             getchar(); // Espera a que el usuario presione Enter
 
@@ -364,7 +381,7 @@ int main() {
                 break;
             }
 
-            system(CLEAR); // Limpiar la pantalla antes de mostrar el menu nuevamente
+            //system(CLEAR); // Limpiar la pantalla antes de mostrar el menu nuevamente
         } while (1);
     } else {
         printf("\n\n\tHa sobrepasado el número máximo de intentos permitidos\n");
@@ -372,15 +389,6 @@ int main() {
 
     return 0;
 }
-
-/*int kbhit(void) {
-    struct timeval tv = {0L, 0L};
-    fd_set fds;
-    FD_ZERO(&fds);
-    FD_SET(0, &fds);
-    return select(1, &fds, NULL, NULL, &tv) > 0;
-}*/
-
 void ocultarEntrada(char *clave, int longitud) {
     int i = 0;
     char caracter;
@@ -425,3 +433,32 @@ void disp_binary(int i) {
     leds(i);
 }
 
+
+void disp_binaryAssembly(int i) {
+    int t;
+    int n = 0;
+    const char led[] = {7, 8, 25, 24, 23, 18, 15, 14};
+    //system("cls");
+    printf("\033[2J");
+    unsigned int k = 10;
+    while (k--)
+    printf("\033[F");
+    
+    for (t = 128; t > 0; t = t/2) {
+
+        if ( i & t) {
+             printf("*");
+            digitalWrite(led[n], 1);
+        } else {
+             printf("_");
+            digitalWrite(led[n], 0);
+        }
+        printw("\n");
+        leds(i);
+
+        //n++;
+    }
+    
+    printf("\n\r");
+    //printf("\033[1;30mPresione la tecla E para salir\033[0m\n\r");
+} 
