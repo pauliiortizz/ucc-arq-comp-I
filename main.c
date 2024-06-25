@@ -21,11 +21,20 @@
 
 void mostrarMenu();
 
-int my_getch(void);
-
 int kbhit(void);
 
-void delay(unsigned long int *);
+void delay(int *);
+
+void delay(int *a){
+ int i;
+    unsigned int j = 0x2fffff; //raspberry 0x3fffff;
+    for (i = 0; i < *a; i++) {
+        for (j = 0; j < 70000; ++j) {
+        
+        }
+        //while (j) j--;
+    }
+}
 
 void ocultarEntrada(char *clave, int longitud);
 
@@ -35,7 +44,7 @@ int leds(int num);
 
 const char led[] = {7, 8, 25, 24, 23, 18, 15, 14};
 
-int kbhit(void) {
+/*int kbhit(void) {
     struct termios oldt, newt;
     int ch;
     int oldf;
@@ -47,7 +56,7 @@ int kbhit(void) {
     oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
 
-    /*
+    
     while ((ch = getchar()) != EOF) {
         if (ch != 100 && ch != 117) {
             ungetc(ch, stdin);
@@ -55,7 +64,7 @@ int kbhit(void) {
             fcntl(STDIN_FILENO, F_SETFL, oldf);
             return 1;
         }
-    }*/
+    }
 
     ch = getchar();
 
@@ -68,7 +77,7 @@ int kbhit(void) {
     }
 
     return 0;
-}
+}*/
 
 int leds(int num) {
     int i, numval;
@@ -82,7 +91,7 @@ int leds(int num) {
     return 0;
 }
 
-void delay(unsigned long int *velocidad) {
+/*void delay(unsigned long int *velocidad) {
 
     initscr();
     cbreak();
@@ -102,12 +111,12 @@ void delay(unsigned long int *velocidad) {
     usleep(*velocidad * 1000);   // Retardo ajustado
 
     endwin();
-}
+}*/
 
 void AutoFantastico(void) {
-    unsigned long int speed1 = 500;
     unsigned char output;
     int t, j = 1;
+    static int tiempo=2000;
 
     initscr(); // Iniciar ncurses
     clear();
@@ -119,40 +128,55 @@ void AutoFantastico(void) {
     do {
         output = 0x80;
         for (t = 0; t < 8; t++) {
-            disp_binary(output);
-            leds(output);
-            delay(&speed1);
-            if (kbhit() && getchar() == 'e') { // 'e' en ASCII
+            keypad(stdscr, TRUE);
+                nodelay(stdscr, TRUE);
+                switch (getch()) {
+                case 'e':
                 endwin();
-                return;
-            }
+                    return;
+                case KEY_UP:
+                tiempo = tiempo - 1000;
+                
+                break;
+                case KEY_DOWN:
+                tiempo = tiempo + 1000;
+                
+                break;
+                }
+            disp_binary(output);
+            delay(&tiempo);
             output = output >> 1;
-            refresh();
         }
         output = 0x02;
         for (t = 0; t < 6; t++) {
-            disp_binary(output);
-            leds(output);
-            delay(&speed1);
-            if (kbhit() && getchar() == 'e') { // 'e' en ASCII
+            keypad(stdscr, TRUE);
+                nodelay(stdscr, TRUE);
+                switch (getch()) {
+                case 'e':
                 endwin();
-                return;
-            }
+                    return;
+                case KEY_UP:
+                tiempo = tiempo - 1000;
+                
+                break;
+                case KEY_DOWN:
+                tiempo = tiempo + 1000;
+                
+                break;
+                }
+            disp_binary(output);
+            delay(&tiempo);
+            
             output = output << 1;
-            refresh();
         }
     } while (1);
-    output = 0x00;
-    disp_binary(output);
-    printw("Chau...\n");
-    refresh();
+    
     endwin(); // Finalizar ncurses
 }
 
 
 void choque(void) {
-
-    unsigned long int speed2 = 500;
+    static int tiempo=2000;
     initscr(); // Iniciar ncurses
     clear();
     noecho(); // No mostrar teclas presionadas
@@ -164,24 +188,31 @@ void choque(void) {
 
     while (1) {
         for (int i = 0; i < 7; i++) {
-            disp_binary(tabla[i]);
-            leds(tabla[i]);
-            delay(&speed2);
-            refresh();
-            if (kbhit() && getchar() == 'e') {
+            keypad(stdscr, TRUE);
+                nodelay(stdscr, TRUE);
+                switch (getch()) {
+                case 'e':
                 endwin();
-                return;
-            }
+                    return;
+                case KEY_UP:
+                tiempo = tiempo - 1000;
+                
+                break;
+                case KEY_DOWN:
+                tiempo = tiempo + 1000;
+                
+                break;
+                }
+            disp_binary(tabla[i]);
+            delay(&tiempo);
         }
     }
-    printw("Chau...\n");
-    refresh();
     endwin(); // Finalizar ncurses
 }
 
 void parpadeoAlternado(void) {
-    unsigned long int speed3 = 500;
     unsigned int output;
+    static int tiempo=2000;
 
     initscr(); // Iniciar ncurses
     clear();
@@ -193,40 +224,52 @@ void parpadeoAlternado(void) {
     do {
         // Mostrar posiciones impares
         output = 0xAA; // 10101010 en binario, representa las posiciones impares
+        keypad(stdscr, TRUE);
+                nodelay(stdscr, TRUE);
+                switch (getch()) {
+                case 'e':
+                endwin();
+                    return;
+                case KEY_UP:
+                tiempo = tiempo - 1000;
+                
+                break;
+                case KEY_DOWN:
+                tiempo = tiempo + 1000;
+                
+                break;
+                }
         disp_binary(output);
-        leds(output);
-        delay(&speed3);
-        refresh();
-
-        if (kbhit() && getchar() == 'e') { // 'e' en ASCII
-            endwin();
-            return;
-        }
+        delay(&tiempo);
 
         // Mostrar posiciones pares
         output = 0x55; // 01010101 en binario, representa las posiciones pares
+        keypad(stdscr, TRUE);
+                nodelay(stdscr, TRUE);
+                switch (getch()) {
+                case 'e':
+                endwin();
+                    return;
+                case KEY_UP:
+                tiempo = tiempo - 1000;
+                
+                break;
+                case KEY_DOWN:
+                tiempo = tiempo + 1000;
+                
+                break;
+                }
         disp_binary(output);
-        leds(output);
-        delay(&speed3);
-        refresh();
-
-        if (kbhit() && getchar() == 'e') { // 'e' en ASCII
-            endwin();
-            return;
-        }
-
+        delay(&tiempo);
+        
     } while (1); // Repite hasta que se toque una tecla
 
-    output = 0x00;
-    disp_binary(output);
-    leds(output);
-    printw("Chau...\n");
-    refresh();
     endwin(); // Finalizar ncurses
 }
 
 void olaOceanica(void) {
-    unsigned long int speed4 = 500;
+    static int tiempo=2000;
+    
     initscr(); // Iniciar ncurses
     clear();
     noecho(); // No mostrar teclas presionadas
@@ -241,15 +284,23 @@ void olaOceanica(void) {
 
     do {
         for (int i = 0; i < sizeof(tabla); i++) {
-            disp_binary(tabla[i]);
-            delay(&speed4);
-            refresh();
-            //usleep(500000); // 0.5 segundos
-
-            if (kbhit() && getchar() == 'e') { // 'e' en ASCII
+            keypad(stdscr, TRUE);
+                nodelay(stdscr, TRUE);
+                switch (getch()) {
+                case 'e':
                 endwin();
-                return;
-            }
+                    return;
+                case KEY_UP:
+                tiempo = tiempo - 1000;
+                
+                break;
+                case KEY_DOWN:
+                tiempo = tiempo + 1000;
+                
+                break;
+                }
+            disp_binary(tabla[i]);
+            delay(&tiempo);
         }
     } while (1); // Repite hasta que se toque una tecla
 
@@ -327,8 +378,8 @@ int main() {
             }
 
             system(CLEAR); // Limpiar la pantalla antes de mostrar el menu nuevamente
-            printf("\n\n\tPresione Enter para continuar...");
-            getchar(); // Espera a que el usuario presione Enter
+            /*printf("\n\n\tPresione Enter para continuar...");
+            getchar(); // Espera a que el usuario presione Enter*/
 
             if (opcion != 1 && opcion!=2 && opcion!=3 && opcion!=4) {
                 printf("\n\tSaliendo...\n");  // Salir del bucle si el usuario selecciona la opción de salir
@@ -343,14 +394,6 @@ int main() {
 
     return 0;
 }
-
-/*int kbhit(void) {
-    struct timeval tv = {0L, 0L};
-    fd_set fds;
-    FD_ZERO(&fds);
-    FD_SET(0, &fds);
-    return select(1, &fds, NULL, NULL, &tv) > 0;
-}*/
 
 void ocultarEntrada(char *clave, int longitud) {
     int i = 0;
