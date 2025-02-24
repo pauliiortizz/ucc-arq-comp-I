@@ -1,5 +1,6 @@
-# Proyecto Arquitectura de Computadoras II - Segundo Semestre 3er año 2024 Integrantes
+# Proyecto Arquitectura de Computadoras I - Primer Semestre 3er año 2024 
 
-Juncos Baustista
-Treachi Belen
-Ortiz Noseda Paulina
+Integrantes
+- Juncos Baustista
+- Treachi Belen
+- Ortiz Noseda Paulina
